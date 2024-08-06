@@ -40,7 +40,7 @@ impl Miner {
             );
 
             // Calc cutoff time
-            let cutoff_time = self.get_cutoff(proof, args.buffer_time).await;
+            let cutoff_time = 600;//self.get_cutoff(proof, args.buffer_time).await;
 
             // Run drillx
             let config = get_config(&self.rpc_client).await;
@@ -114,11 +114,8 @@ impl Miner {
                                         // Mine until min difficulty has been met
                                         break;
                                     }
-                                } else if i == 0 {
-                                    progress_bar.set_message(format!(
-                                        "Mining... ({} sec remaining)",
-                                        cutoff_time.saturating_sub(timer.elapsed().as_secs()),
-                                    ));
+                                } else if timer.elapsed().as_secs() >= cutoff_time {
+                                    break;
                                 }
                             }
 
